@@ -21,5 +21,7 @@ if [ -z "$status" ]; then
   exit 0
 fi
 
+echo "[Pyke] Changes detected, pulling via git."
+
 git pull
 pm2 reload "$app"

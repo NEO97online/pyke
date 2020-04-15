@@ -11,6 +11,8 @@ const port = process.env.PORT || 6000
 const secret = process.env.PYKE_SECRET
 
 const server = http.createServer((req, res) => {
+  console.log('[Pyke] Received request.')
+
   res.writeHead(400, { 'Content-Type': 'application/json' })
 
   if (req.method !== 'POST') {
@@ -23,6 +25,7 @@ const server = http.createServer((req, res) => {
   req.on('end', () => {
     const hash = 'sha1=' + crypto.createHmac('sha1', secret).update(jsonString).digest('hex') 
     if (hash !== req.headers['x-hub-signature']) {
+      console.log('[Pyke] Received invalid github signature.')
       return res.end(JSON.stringify({ error: 'Invalid key' }))
     }
 

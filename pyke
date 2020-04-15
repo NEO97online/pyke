@@ -16,7 +16,7 @@ cd $path
 git remote update
 status="$(git status | grep "up to date")"
 
-if [ -z "$status" ]; then
+if [ ! -z "$status" ]; then
   echo "[Pyke] No changes detected, nothing to pull."
   exit 0
 fi

@@ -5,7 +5,7 @@ const fs = require('fs')
 const path = require('path')
 
 const dotenv = fs.readFileSync(path.join(__dirname, '.env'), { encoding: 'utf8' })
-process.env = { ...process.env, dotenv }
+process.env = { ...process.env, ...dotenv }
 
 const port = process.env.PORT || 6000
 const secret = process.env.PYKE_SECRET

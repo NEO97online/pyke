@@ -1,11 +1,12 @@
+require('dotenv').config()
 const crypto = require('crypto')
 const { spawn } = require('child_process')
 const http = require('http')
 const fs = require('fs')
 const path = require('path')
 
-const dotenv = fs.readFileSync(path.join(__dirname, '.env'), { encoding: 'utf8' })
-process.env = { ...process.env, ...dotenv }
+//const dotenv = fs.readFileSync(path.join(__dirname, '.env'), { encoding: 'utf8' })
+//process.env = { ...process.env, ...dotenv }
 
 const port = process.env.PORT || 6000
 const secret = process.env.PYKE_SECRET

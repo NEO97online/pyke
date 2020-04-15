@@ -23,21 +23,26 @@ const server = http.createServer((req, res) => {
   req.on('data', data => jsonString += data)
 
   req.on('end', () => {
-    const hash = 'sha1=' + crypto.createHmac('sha1', secret).update(jsonString).digest('hex') 
-    if (hash !== req.headers['x-hub-signature']) {
-      console.log('[Pyke] Received invalid github signature.')
-      return res.end(JSON.stringify({ error: 'Invalid key' }))
+    try {
+      const hash = 'sha1=' + crypto.createHmac('sha1', secret).update(jsonString).digest('hex') 
+      if (hash !== req.headers['x-hub-signature']) {
+        console.log('[Pyke] Received invalid github signature.')
+        return res.end(JSON.stringify({ error: 'Invalid key' }))
+      }
+
+      const pyke = spawn(`${__dirname}/pyke`)
+      pyke.stdout.on('data', data => {
+        const buff = new Buffer(data)
+        console.log(buff.toString('utf-8'))
+      })
+
+      res.writeHead(400, { 'Content-Type': 'application/json' })
+
+      return res.end(JSON.stringify({ success: true }))
+    } catch (err) {
+      console.error(err)
+      return res.end(JSON.stringify({ error: 'Internal server error' }))
     }
-
-    const pyke = spawn(`${__dirname}/pyke`)
-    pyke.stdout.on('data', data => {
-      const buff = new Buffer(data)
-      console.log(buff.toString('utf-8'))
-    })
-
-    res.writeHead(400, { 'Content-Type': 'application/json' })
-
-    return res.end(JSON.stringify({ success: true }))
   })
 })
 

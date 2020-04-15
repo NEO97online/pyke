@@ -1,9 +1,10 @@
-require('dotenv').config()
 const crypto = require('crypto')
 const { spawn } = require('child_process')
 const http = require('http')
 const fs = require('fs')
 const path = require('path')
+
+require('dotenv').config({ path: path.join(__dirname, '.env') })
 
 //const dotenv = fs.readFileSync(path.join(__dirname, '.env'), { encoding: 'utf8' })
 //process.env = { ...process.env, ...dotenv }

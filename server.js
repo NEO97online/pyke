@@ -15,9 +15,10 @@ const secret = process.env.PYKE_SECRET
 const server = http.createServer((req, res) => {
   console.log('[Pyke] Received request.')
 
-  res.writeHead(400, { 'Content-Type': 'application/json' })
+  res.setHeader('Content-Type', 'application/json')
 
   if (req.method !== 'POST') {
+    res.statusCode = 400
     return res.end(JSON.stringify({ error: 'Invalid request' }))
   }
 
@@ -29,6 +30,7 @@ const server = http.createServer((req, res) => {
       const hash = 'sha1=' + crypto.createHmac('sha1', secret).update(jsonString).digest('hex') 
       if (hash !== req.headers['x-hub-signature']) {
         console.log('[Pyke] Received invalid github signature.')
+        res.statusCode = 401
         return res.end(JSON.stringify({ error: 'Invalid key' }))
       }
 
@@ -38,11 +40,11 @@ const server = http.createServer((req, res) => {
         console.log(buff.toString('utf-8'))
       })
 
-      res.writeHead(400, { 'Content-Type': 'application/json' })
-
+      res.statusCode = 200
       return res.end(JSON.stringify({ success: true }))
     } catch (err) {
       console.error(err)
+      res.statusCode = 500
       return res.end(JSON.stringify({ error: 'Internal server error' }))
     }
   })
